@@ -6,8 +6,8 @@ $null = gpupdate /target:computer /force /wait:0
 #Remove-ItemProperty -Path $reg_winlogon_path -Name DefaultPassword -ErrorAction SilentlyContinue
 $null = Set-Service -Name "WinRM" -StartupType Automatic -Confirm:$false
 $null = Start-Service -Name "WinRM" -Confirm:$false
-Get-Certificate -Template "GSIWinRMSSL" -Url ldap:
-Get-Certificate -Template "GSI Rdp" -Url ldap:
+Get-Certificate -Template "GSIWinRMSSL" -Url ldap: -CertStoreLocation Cert:\LocalMachine\My
+Get-Certificate -Template "GSI Rdp" -Url ldap: -CertStoreLocation Cert:\LocalMachine\My
 $ruleDisplayName = 'Windows Remote Management (HTTPS-In)'
 
 if (-not (Get-NetFirewallRule -DisplayName $ruleDisplayName -ErrorAction Ignore)) {
