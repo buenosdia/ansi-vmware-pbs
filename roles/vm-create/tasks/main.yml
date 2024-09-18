@@ -81,6 +81,7 @@
           - "{{ dnsserver2 }}"
     customization:
       autologon: true
+      autologoncount: 1
       dns_servers:
         - "{{ dnsserver1 }}"
         - "{{ dnsserver2 }}"
