@@ -82,6 +82,7 @@
     customization:
       autologon: true
       autologoncount: 1
+      password: "{{ local_admin | default('SomedingRando01!') }}"
       dns_servers:
         - "{{ dnsserver1 }}"
         - "{{ dnsserver2 }}"
