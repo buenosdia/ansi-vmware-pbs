@@ -1,0 +1,137 @@
+---
+# tasks file for vm-create
+- name: Clone VM from template with dhcp
+  community.vmware.vmware_guest:
+    validate_certs: "{{ validate_certs | default('False') }}"
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{ datacenter }}"
+    name: "{{ vm_name }}"
+    folder: "{{ vm_folder }}"
+    template: "{{ vm_template }}"
+    state: poweredon
+    annotation: "{{ vm_notes | default('Provisioned by ansible') }}"
+    cluster: "{{ cluster }}"
+    hardware:
+      num_cpus: "{{ vm_cpu }}"
+      memory_mb: "{{ vm_mem }}"
+      hotadd_cpu: "{{ hotadd_cpu }}"
+      hotremove_cpu: "{{ hotremove_cpu }}"
+      hotadd_memory: "{{ hotadd_mem }}"
+    disk:
+      - size_gb: "{{ vm_osdisk }}"
+        type: "{{ vm_disk_type | default('thin') }}"
+        datastore: "{{ vm_datastore }}"
+    networks:
+      - name: "{{ vm_network }}"
+        device_type: "vmxnet3"
+        type: dhcp
+    wait_for_ip_address: true
+  delegate_to: localhost
+  register: dynamic_vm
+  when: vm_dhcpstatic == 'dhcp'
+
+- name: Clone VM from template with static IP
+  community.vmware.vmware_guest:
+    validate_certs: "{{ validate_certs | default('False') }}"
+    hostname: "{{ vcenter_server }}"
+    username: "{{ your_username }}"
+    password: "{{ your_password }}"
+    datacenter: "{{ datacenter }}"
+    # customization_spec: "{{ cust_spec }}"
+    name: "{{ vm_name }}"
+    folder: "{{ vm_folder }}"
+    template: "{{ vm_template }}"
+    state: powered-on
+    annotation: "{{ vm_notes | default('Provisioned by ansible') }}"
+    cluster: "{{ cluster }}"
+    hardware:
+      num_cpus: "{{ vm_cpu }}"
+      memory_mb: "{{ vm_mem }}"
+      hotadd_cpu: "{{ hotadd_cpu }}"
+      hotremove_cpu: "{{ hotremove_cpu }}"
+      hotadd_memory: "{{ hotadd_mem }}"
+    disk:
+      - size_gb: "{{ vm_osdisk }}"
+        type: "{{ vm_disk_type | default('thin') }}"
+        datastore: "{{ vm_datastore }}"
+    advanced_settings:
+      - key: "time.synchronize.allow"
+        value: "FALSE"
+      - key: "time.synchronize.allowusb_xhci.present"
+        value: "FALSE"
+      - key: "tools.guest.desktop.autolock"
+        value: "TRUE"
+      - key: "usb_xhci.present"
+        value: "FALSE"
+      - key: "tools.syncTime"
+        value: "FALSE"
+    networks:
+      - name: "{{ vm_network }}"
+        connected: true
+        start_connected: true
+        device_type: "vmxnet3"
+        type: static
+        ip: "{{ vm_ip }}"
+        netmask: "{{ netmask | default('255.255.255.0') }}"
+        gateway: "{{ vm_gateway }}"
+        dns_servers:
+          - "{{ dnsserver1 }}"
+          - "{{ dnsserver2 }}"
+    customization:
+      dns_servers:
+        - "{{ dnsserver1 }}"
+        - "{{ dnsserver2 }}"
+      domain: "{{ domain }}"
+      orgname: "Geographic Solutions Inc"
+      fullname: "Geographic Solutions Inc"
+      joindomain: "{{ domain }}"
+      domainadmin: "{{ your_username }}"
+      domainadminpassword: "{{ your_password }}"
+      timezone: "{{ timezone }}"
+      runonce:
+        - gpupdate /force
+        - slmgr.vbs /ato
+        - '"date >> C:\Temp\date.txt"'
+        - "winrm qc -q"
+        - 'winrm set winrm/config/service/auth @{Basic="true"}'
+        - "winrm quickconfig -transport:https -quiet"
+        # - '"powershell.exe -ExecutionPolicy Unrestricted -File C:\Windows\Temp\ConfigureRemotingforAnsible.ps1"'
+      existing_vm: true
+    wait_for_ip_address: true
+    wait_for_ip_address_timeout: 600
+    wait_for_customization: true
+    wait_for_customization_timeout: 600
+  register: static_vm
+  delegate_to: localhost
+  when: vm_dhcpstatic == 'static'
+
+- name: Copy file to vm
+  community.vmware.vmware_guest_file_operation:
+    hostname: "{{ vcenter_server }}"
+    username: "{{ your_username }}"
+    password: "{{ your_password }}"
+    validate_certs: false
+    vm_id: "{{ vm_name }}"
+    vm_username: "{{ your_username }}"
+    vm_password: "{{ your_password }}"
+    copy:
+      src: "files/setup.ps1"
+      dest: C:\Temp\setup.ps1
+      overwrite: true
+
+- name: Run the Powershell script to generate a new cert and enable 5986 port in firewall
+  community.vmware.vmware_vm_shell:
+    hostname: "{{ vcenter_server }}"
+    username: "{{ your_username }}"
+    password: "{{ your_password }}"
+    datacenter: "{{ datacenter }}"
+    cluster: "{{ cluster }}"
+    vm_id: "{{ vm_name }}"
+    validate_certs: false
+    vm_username: "{{ your_username }}"
+    vm_password: "{{ your_password }}"
+    vm_shell: 'C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe'
+    vm_shell_args: '-ExecutionPolicy Unrestricted -File C:\Temp\setup.ps1'
+    wait_for_process: true
