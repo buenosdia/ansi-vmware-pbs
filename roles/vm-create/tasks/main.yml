@@ -35,7 +35,7 @@
 - name: Clone VM from template with static IP
   community.vmware.vmware_guest:
     validate_certs: "{{ validate_certs | default('False') }}"
-    hostname: "{{ vcenter_server }}"
+    hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
     datacenter: "{{ datacenter }}"
@@ -109,7 +109,7 @@
 
 - name: Copy file to vm
   community.vmware.vmware_guest_file_operation:
-    hostname: "{{ vcenter_server }}"
+    hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
     validate_certs: false
@@ -123,7 +123,7 @@
 
 - name: Run the Powershell script to generate a new cert and enable 5986 port in firewall
   community.vmware.vmware_vm_shell:
-    hostname: "{{ vcenter_server }}"
+    hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
     datacenter: "{{ datacenter }}"
