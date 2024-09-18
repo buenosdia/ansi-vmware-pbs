@@ -80,6 +80,7 @@
           - "{{ dnsserver1 }}"
           - "{{ dnsserver2 }}"
     customization:
+      autologon: true
       dns_servers:
         - "{{ dnsserver1 }}"
         - "{{ dnsserver2 }}"
@@ -92,7 +93,7 @@
       timezone: "{{ timezone }}"
       runonce:
         - gpupdate /force
-        - slmgr.vbs /ato
+        - cscript C:\Windows\System32\slmgr.vbs /ato
         - '"date >> C:\Temp\date.txt"'
         - "winrm qc -q"
         - 'winrm set winrm/config/service/auth @{Basic="true"}'
