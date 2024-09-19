@@ -5,14 +5,9 @@
   #  - vm-create
 
   post_tasks:
-- name: Add host to group 'just_created' with variable foo=42
-  ansible.builtin.add_host:
-    hostname: "{{ vm_name }}.{{ domain }}"
-    groups: new_vm
-#   post_tasks:
-#     - add_host:
-#       hostname: "{{ vm_name }}.{{ domain }}"
-#       groups: new_vm
+    - add_host:
+      hostname: "{{ vm_name }}.{{ domain }}"
+      groups: new_vm
 
 - name: Test Winrm
   hosts: new_vm
