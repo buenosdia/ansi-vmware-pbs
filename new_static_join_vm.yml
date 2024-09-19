@@ -6,17 +6,19 @@
   #  - vm-create
 
   post_tasks:
-    - name: Test Winrm
-      ansible.builtin.add_host:
+    - add_host:
         hostname: "{{ vm_name }}.{{ domain }}"
-        groups: new_vm
+        groups: foogroup
 
-- name: Test Winrm
-  hosts: new_vm
+    - debug:
+        var: ansible_play_hosts
+
+- hosts: foogroup
   gather_facts: false
-  vars:
-    ansible_connection: winrm
-    ansible_winrm_transport: kerberos
-    ansible_port: 5985
-- name: Ensure windows host is reachable
-  ansible.windows.win_ping:
+  connection: local
+  tasks:
+    - name: Test KERB
+      ansible.windows.win_ping:
+
+    - debug:
+        msg: I was added successfully!
