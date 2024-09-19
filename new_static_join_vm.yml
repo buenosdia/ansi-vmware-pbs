@@ -2,6 +2,7 @@
   hosts: localhost
   gather_facts: false
   vars:
+  tasks:
   roles:
     - vm-create
   post_tasks:
