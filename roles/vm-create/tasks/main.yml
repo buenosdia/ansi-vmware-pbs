@@ -13,5 +13,5 @@
   throttle: 1
   register: vm_exists
   when: destructive is not defined or not destructive
-- debug:
-  msg: "{{ destructive }} {{ vm_exists }}"
+  debug:
+    msg: "{{ destructive }} {{ vm_exists }}"
