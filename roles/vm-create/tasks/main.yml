@@ -1,13 +1,42 @@
 ---
 # tasks file for vm-create
+- name: Check if virtual machine exists
+  community.vmware.vmware_guest_info:
+    validate_certs: "{{ validate_certs | default('false') }}"
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vmware_password }}"
+    name: "{{ vm_name }}"
+    datacenter: "{{ datacenter }}"
+    folder: "{{ vm_folder }}"
+  ignore_errors: true
+  throttle: 1
+  register: vm_exists
+  when: destructive is not defined or not destructive
+
+- name: Remove virtual machine from inventory
+  community.vmware.vmware_guest:
+    validate_certs: false
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vmware_password }}"
+    name: "{{ vm_name }}"
+    state: absent
+    force: True
+  delegate_to: localhost
+  throttle: 1
+  when: destructive == True and vm_exists is defined
+  debug:
+    msg: "{{ destructive }} {{ vm_exists }}"
+
 - name: Clone VM from template with dhcp
   community.vmware.vmware_guest:
-    validate_certs: "{{ validate_certs | default('False') }}"
+    validate_certs: "{{ validate_certs | default('false') }}"
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
-    datacenter: "{{ datacenter }}"
     name: "{{ vm_name }}"
+    datacenter: "{{ datacenter }}"
     folder: "{{ vm_folder }}"
     template: "{{ vm_template }}"
     state: poweredon
@@ -35,7 +64,7 @@
 
 - name: Clone VM from template with static IP
   community.vmware.vmware_guest:
-    validate_certs: "{{ validate_certs | default('False') }}"
+    validate_certs: "{{ validate_certs | default('false') }}"
     hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
