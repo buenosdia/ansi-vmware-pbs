@@ -29,3 +29,21 @@
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
   when: destructive == "True" and vm_exists is defined
+
+- name: Remove virtual machine from inventory
+  community.vmware.vmware_guest:
+    validate_certs: false
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ your_username }}"
+    password: "{{ your_username }}"
+    name: "{{ vm_name }}"
+    datacenter: "{{ datacenter }}"
+    folder: "{{ vm_folder }}"
+    state: absent
+    state_change_timeout: 120
+    force: true
+  delegate_to: localhost
+  throttle: 1
+  when: destructive == True and vm_exists is defined
+  debug:
+    msg: "{{ destructive }} {{ vm_exists }}"
