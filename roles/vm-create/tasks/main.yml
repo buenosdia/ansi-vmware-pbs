@@ -35,7 +35,7 @@
     validate_certs: false
     hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
-    password: "{{ your_username }}"
+    password: "{{ your_password }}"
     name: "{{ vm_name }}"
     datacenter: "{{ datacenter }}"
     folder: "{{ vm_folder }}"
