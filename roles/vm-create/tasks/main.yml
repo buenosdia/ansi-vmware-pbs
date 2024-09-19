@@ -4,8 +4,8 @@
   community.vmware.vmware_guest_info:
     validate_certs: "{{ validate_certs | default('false') }}"
     hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vmware_password }}"
+    username: "{{ your_username }}"
+    password: "{{ your_password }}"
     name: "{{ vm_name }}"
     datacenter: "{{ datacenter }}"
     folder: "{{ vm_folder }}"
