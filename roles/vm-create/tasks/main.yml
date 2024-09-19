@@ -65,7 +65,7 @@
     cluster: "{{ cluster }}"
     hardware:
       num_cpus: "{{ vm_cpu }}"
-      num_cpu_cores_per_socket: "{{ vm_cpu / 2 | int }}"
+      num_cpu_cores_per_socket: "{{ vm_cpu // 2 | int }}"
       memory_mb: "{{ vm_mem }}"
       hotadd_cpu: "{{ hotadd_cpu }}"
       hotremove_cpu: "{{ hotremove_cpu }}"
@@ -99,7 +99,7 @@
     cluster: "{{ cluster }}"
     hardware:
       num_cpus: "{{ vm_cpu }}"
-      num_cpu_cores_per_socket: "{{ vm_cpu / 2 | int }}"
+      num_cpu_cores_per_socket: "{{ vm_cpu // 2 | int }}"
       memory_mb: "{{ vm_mem }}"
       hotadd_cpu: "{{ hotadd_cpu }}"
       hotremove_cpu: "{{ hotremove_cpu }}"
