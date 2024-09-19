@@ -2,20 +2,19 @@
   hosts: localhost
   gather_facts: false
   vars:
-  tasks:
   roles:
     - vm-create
-  post_tasks:
-    - add_host:
-      hostname: "{{ vm_name }}.{{ domain }}"
-      groups: new_vm
+#   post_tasks:
+#     - add_host:
+#       hostname: "{{ vm_name }}.{{ domain }}"
+#       groups: new_vm
 
-- name: Test Winrm
-  hosts: new_vm
-  gather_facts: false
-  vars:
-    ansible_connection: winrm
-    ansible_winrm_transport: kerberos
-    ansible_port: 5986
-- name: Ensure windows host is reachable
-  ansible.windows.win_ping:
+# - name: Test Winrm
+#   hosts: new_vm
+#   gather_facts: false
+#   vars:
+#     ansible_connection: winrm
+#     ansible_winrm_transport: kerberos
+#     ansible_port: 5986
+# - name: Ensure windows host is reachable
+#   ansible.windows.win_ping:
