@@ -14,6 +14,7 @@
 
 - name: Print if virtual machine exists
   delegate_to: localhost
+  ignore_errors: true
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
   when: vm_exists is defined
@@ -95,7 +96,7 @@
     cluster: "{{ cluster }}"
     hardware:
       num_cpus: "{{ vm_cpu }}"
-      num_cpu_cores_per_socket: "{{ vm_cpu | int / 2 | int}}"
+      num_cpu_cores_per_socket: "{{ vm_cpu | int / 2 | int }}"
       memory_mb: "{{ vm_mem }}"
       hotadd_cpu: "{{ hotadd_cpu }}"
       hotremove_cpu: "{{ hotremove_cpu }}"
