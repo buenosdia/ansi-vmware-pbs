@@ -182,6 +182,8 @@
       src: "roles/files/setup.ps1"
       dest: C:\Temp\setup.ps1
       overwrite: true
+    retries: 1
+    delay: 3
 
 - name: Run the Powershell script to generate a new cert and enable 5986 port in firewall
   community.vmware.vmware_vm_shell:
@@ -198,3 +200,5 @@
     vm_shell: 'C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe'
     vm_shell_args: '-ExecutionPolicy Unrestricted -File C:\Temp\setup.ps1'
     wait_for_process: true
+    retries: 1
+    delay: 3
