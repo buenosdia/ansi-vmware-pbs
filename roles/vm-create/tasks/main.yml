@@ -1,6 +1,7 @@
 ---
 # tasks file for vm-create
 - name: Check if virtual machine exists
+  delegate_to: localhost
   community.vmware.vmware_guest_info:
     validate_certs: "{{ validate_certs | default('false') }}"
     hostname: "{{ vcenter_hostname }}"
@@ -19,7 +20,7 @@
     msg: "{{ destructive }} {{ vm_exists }}"
   when: vm_exists is defined
 
-- name: Print if virtual machine does ot exists
+- name: Print if virtual machine does not exists
   delegate_to: localhost
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
@@ -29,7 +30,9 @@
   delegate_to: localhost
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
-  when: destructive == "True" and vm_exists is defined
+  when:
+    - destructive == "True"
+    - vm_exists is defined
 
 - name: Remove virtual machine from inventory
   community.vmware.vmware_guest:
