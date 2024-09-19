@@ -28,4 +28,4 @@
   delegate_to: localhost
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
-  when: destructive == True and vm_exists is defined
+  when: destructive == "True" and vm_exists is defined
