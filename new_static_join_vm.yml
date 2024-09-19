@@ -6,13 +6,12 @@
     #  post_tasks:
     - name: Test Winrm
       ansible.builtin.add_host:
-        hostname: "{{ vm_name }}.{{ domain }}"
+        ansible_host: "{{ vm_name }}.{{ domain }}"
         groups: new_vm
+        ansible_connection: winrm
+        ansible_winrm_transport: kerberos
+        ansible_port: 5985
 - hosts: new_vm
   gather_facts: false
-  vars:
-    ansible_connection: winrm
-    ansible_winrm_transport: kerberos
-    ansible_port: 5985
 - name: Ensure windows host is reachable
   ansible.windows.win_ping:
