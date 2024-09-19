@@ -176,8 +176,8 @@
     datacenter: "{{ datacenter }}"
     cluster: "{{ cluster }}"
     folder: "{{ vm_folder }}"
-    vm_username: "{{ your_username }}"
-    vm_password: "{{ your_password }}"
+    vm_username: "Administrator"
+    vm_password: "{{ local_admin | default('SomedingRando01!') }}"
     copy:
       src: "roles/files/setup.ps1"
       dest: C:\Temp\setup.ps1
