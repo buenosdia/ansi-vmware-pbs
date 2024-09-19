@@ -1,8 +1,6 @@
 ---
 # tasks file for vm-create
 - name: Check if virtual machine exists
-  vars:
-    destructive: false
   community.vmware.vmware_guest_info:
     validate_certs: "{{ validate_certs | default('false') }}"
     hostname: "{{ vcenter_hostname }}"
