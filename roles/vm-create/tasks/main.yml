@@ -13,5 +13,7 @@
   throttle: 1
   register: vm_exists
   when: destructive is not defined or not destructive
+- name: Prints two lines of messages, but only if there is an environment value set
+  delegate_to: localhost
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
