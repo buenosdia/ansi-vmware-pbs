@@ -12,7 +12,6 @@
   ignore_errors: true
   throttle: 1
   register: vm_exists
-  when: destructive is not defined or not destructive
 
 - name: Print if virtual machine exists
   delegate_to: localhost
