@@ -8,7 +8,6 @@
     password: "{{ your_password }}"
     name: "{{ vm_name }}"
     datacenter: "{{ datacenter }}"
-    folder: "{{ vm_folder }}"
   ignore_errors: true
   throttle: 1
   register: vm_exists
