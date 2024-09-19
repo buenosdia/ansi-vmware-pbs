@@ -1,13 +1,15 @@
 - name: Create a VM from a template
   hosts: localhost
   gather_facts: false
+  tasks:
   #roles:
   #  - vm-create
 
   post_tasks:
-    - add_host:
-      hostname: "{{ vm_name }}.{{ domain }}"
-      groups: new_vm
+    - name: Test Winrm
+      ansible.builtin.add_host:
+        hostname: "{{ vm_name }}.{{ domain }}"
+        groups: new_vm
 
 - name: Test Winrm
   hosts: new_vm
