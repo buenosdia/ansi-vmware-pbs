@@ -15,6 +15,7 @@
     cluster: "{{ cluster }}"
     hardware:
       num_cpus: "{{ vm_cpu }}"
+      num_cpu_cores_per_socket: "{{ vm_cpu | int / 2 }}"
       memory_mb: "{{ vm_mem }}"
       hotadd_cpu: "{{ hotadd_cpu }}"
       hotremove_cpu: "{{ hotremove_cpu }}"
@@ -48,6 +49,7 @@
     cluster: "{{ cluster }}"
     hardware:
       num_cpus: "{{ vm_cpu }}"
+      num_cpu_cores_per_socket: "{{ vm_cpu | int / 2 }}"
       memory_mb: "{{ vm_mem }}"
       hotadd_cpu: "{{ hotadd_cpu }}"
       hotremove_cpu: "{{ hotremove_cpu }}"
@@ -81,7 +83,7 @@
           - "{{ dnsserver2 }}"
     customization:
       autologon: true
-      autologoncount: 2
+      autologoncount: 3
       password: "{{ local_admin | default('SomedingRando01!') }}"
       dns_servers:
         - "{{ dnsserver1 }}"
@@ -94,7 +96,7 @@
       domainadminpassword: "{{ your_password }}"
       timezone: "{{ timezone }}"
       runonce:
-        - net user Administrator "{{ local_admin | default('SomedingRando01!') }}"
+        - net user Administrator {{ local_admin | default('SomedingRando01!') }}
         - net user Administrator /ACTIVE:YES /LOGONPASSWORDCHG:NO /EXPIRES:NEVER /PASSWORDREQ:YES
         - WMIC USERACCOUNT WHERE "Name='Administrator'" SET PasswordExpires=FALSE
         - gpupdate /force
@@ -121,6 +123,9 @@
     password: "{{ your_password }}"
     validate_certs: false
     vm_id: "{{ vm_name }}"
+    datacenter: "{{ datacenter }}"
+    cluster: "{{ cluster }}"
+    folder: "{{ vm_folder }}"
     vm_username: "{{ your_username }}"
     vm_password: "{{ your_password }}"
     copy:
@@ -135,10 +140,11 @@
     password: "{{ your_password }}"
     datacenter: "{{ datacenter }}"
     cluster: "{{ cluster }}"
+    folder: "{{ vm_folder }}"
     vm_id: "{{ vm_name }}"
     validate_certs: false
-    vm_username: "{{ your_username }}"
-    vm_password: "{{ your_password }}"
+    vm_username: "Administrator"
+    vm_password: "{{ local_admin | default('SomedingRando01!') }}"
     vm_shell: 'C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe'
     vm_shell_args: '-ExecutionPolicy Unrestricted -File C:\Temp\setup.ps1'
     wait_for_process: true
