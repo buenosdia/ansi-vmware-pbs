@@ -81,7 +81,8 @@
     wait_for_ip_address: true
   delegate_to: localhost
   register: dynamic_vm
-  when: vm_dhcpstatic == 'dhcp'
+  when:
+    - vm_dhcpstatic == 'dhcp'
 
 - name: Clone VM from template with static IP
   community.vmware.vmware_guest:
@@ -164,7 +165,10 @@
     wait_for_customization_timeout: 600
   register: static_vm
   delegate_to: localhost
-  when: vm_dhcpstatic == 'static'
+  when:
+    - vm_dhcpstatic == 'static'
+    - vm_exists is not defined
+    - destructive == "True" and vm_exists is defined
 
 - name: Copy file to vm
   community.vmware.vmware_guest_file_operation:
