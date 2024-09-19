@@ -44,6 +44,4 @@
     force: true
   delegate_to: localhost
   throttle: 1
-  when: destructive == True and vm_exists is defined
-  debug:
-    msg: "{{ destructive }} {{ vm_exists }}"
+  when: destructive == "True" and vm_exists is defined
