@@ -35,13 +35,13 @@
 
     - name: Windows Update - Get WSUS server
       ansible.windows.win_reg_stat:
-        path: HKLM:\\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-        name: WUServer
+        path: HKLM:\\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
+        name: AUOptions
       register: wsus_url
 
     - name: Print if virtual machine exists
       delegate_to: localhost
-      #      ignore_errors: true
+      ignore_errors: true
       ansible.builtin.debug:
         msg: "{{ wsus_url }}"
       when: wsus_url is defined
