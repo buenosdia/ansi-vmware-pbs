@@ -9,5 +9,5 @@
   post_tasks:
     - name: Add current VM to host
       ansible.builtin.add_host:
-        name: "{{ vm_name }}.{{ domain_name }}"
+        name: "{{ vm_name }}.{{ domain }}"
         groups: created_vm
