@@ -41,7 +41,7 @@
 
     - name: Print if virtual machine exists
       delegate_to: localhost
-      ignore_errors: true
+      #      ignore_errors: true
       ansible.builtin.debug:
         msg: "{{ wsus_url }}"
       when: wsus_url is defined
