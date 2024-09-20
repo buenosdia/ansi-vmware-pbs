@@ -144,13 +144,13 @@
         }
         })|ConvertTo-JSON
         $Downloader = $UpdateSession.CreateUpdateDownloader()
-        $Downloader.Updates = $SearchResult
+        $Downloader.Updates = $IsHiddenInstalled
         $Downloader.Download()
 
         $Installer = New-Object -ComObject Microsoft.Update.Installer
-        $Installer.Updates = $SearchResult
+        $Installer.Updates = $IsHiddenInstalled
 
-        $Result = $Installer.Install()
+        $pending_updates = $Installer.Install()
         }
         $pending_updates
       register: pending_updates
