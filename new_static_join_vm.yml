@@ -40,9 +40,9 @@
       register: wsus_url
 
     - name: Set vars
-      set_fact:
-        - proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
-        - wsus_server: "{{ proto_port.split(':')[0]  }}"
+      ansible.builtin.set_fact:
+        proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
+        wsus_server: "{{ proto_port.split(':')[0]  }}"
 
     - name: Print wsus_url
       ignore_errors: true
