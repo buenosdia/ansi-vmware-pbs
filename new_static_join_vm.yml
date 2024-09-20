@@ -10,14 +10,15 @@
     - name: Add current VM to host
       ansible.builtin.add_host:
         name: "{{ vm_name }}.{{ domain }}"
+        ansible_connection: winrm
+        ansible_winrm_transport: kerberos
+        ansible_port: 5985
         groups: created_vm
 
 - name: Create a VM from a template
   hosts: created_vm
   vars:
-  ansible_connection: winrm
-  ansible_winrm_transport: kerberos
-  ansible_port: 5985
+
   tasks:
     - name: Ensure windows host is reachable
       ansible.windows.win_ping:
