@@ -142,7 +142,7 @@
 
             }
         }
-        })|ConvertTo-JSON
+        })
         $Downloader = $UpdateSession.CreateUpdateDownloader()
         $Downloader.Updates = $IsHiddenInstalled
         $Downloader.Download()
@@ -160,6 +160,8 @@
       ansible.builtin.debug:
         msg:
           - "{{ pending_updates.stdout }}"
+          - "{{ pending_updates.PendingMissingUpdates }}"
+          - "{{ pending_updates }}"
       when:
         - pending_updates is defined
 
