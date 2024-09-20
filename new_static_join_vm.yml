@@ -48,8 +48,9 @@
         log_path: C:\Temp\ansible_wu.txt
       become: true
       become_method: runas
-      become_flags: logon_type=new_credential logon_flags=netcredentials_only
+      become_flags: logon_type=new_credentials logon_flags=netcredentials_only
       #reboot: true
       vars:
+        #ansible_become_method: runas
         ansible_become_user: "{{ domain_upper }}\\{{ user_name }}"
         ansible_become_password: "{{ your_password }}"
