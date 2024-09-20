@@ -47,7 +47,6 @@
         msg: "{{ wsus_server }}"
       when:
         - wsus_url is defined
-        - wsus_server is defined
 
     # - name: Windows Update - Remove AccountDomainSid
     #   ansible.windows.win_regedit:
