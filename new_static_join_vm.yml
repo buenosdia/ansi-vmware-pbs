@@ -107,7 +107,11 @@
         wuauclt /resetauthorization /detectnow
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
 
-    - name: Windows Update - Get WSUS server
+    - name: Get-Certificate - GSIWinRMSSL
+      ansible.windows.win_shell: |
+        Get-Certificate -Template "GSIWinRMSSL" -Url ldap: -CertStoreLocation Cert:\LocalMachine\My
+
+    - name: Windows Update - Check
       ansible.windows.win_shell: |
         $UpdateSession = New-Object -ComObject Microsoft.Update.Session
         $UpdateServiceManager = New-Object -ComObject Microsoft.Update.ServiceManager 
@@ -149,7 +153,7 @@
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates}}"
+          - "{{ pending_updates.PendingMissingUpdates}}"
       when:
         - pending_updates is defined
 
