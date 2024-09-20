@@ -12,14 +12,15 @@
         name: "{{ vm_name }}.{{ domain }}"
         ansible_connection: winrm
         ansible_winrm_transport: kerberos
-        ansible_user: "{{ your_username }}"
         ansible_port: 5985
         groups: created_vm
 
 - name: Create a VM from a template
   hosts: created_vm
   vars:
-
+    domain_upper: "{{ your_username.split('@')[1] | upper }}"
+    user_name: "{{ your_username.split('@')[0] | lower }}"
+    ansible_user: "{{ user_name }}@{{ domain_upper }}"
   tasks:
     - name: Ensure windows host is reachable
       ansible.windows.win_ping:
