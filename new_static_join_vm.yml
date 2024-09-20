@@ -142,14 +142,14 @@
         }
         })|ConvertTo-JSON
         }
-        $PendingUpdates
+        write-output $PendingMissingUpdates
       register: pending_updates
 
     - name: Pending Updates
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates.stdout | from_json}}"
+          - "{{ pending_updates}}"
       when:
         - pending_updates is defined
 
