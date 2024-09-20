@@ -40,17 +40,17 @@
       register: wsus_url
 
     - name: Print wsus_url
+      ignore_errors: true
       vars:
         - proto_port: "{{ wsus_url.value.split('//')[1]  }}"
         - wsus_port: "{{ proto_port.split(':')[1]  }}"
-        - wsus_proto: "{{ wsus_url.value.split(':')[1]  }}"
+        - wsus_proto: "{{ wsus_url.value.split(':')[0]  }}"
         - wsus_server: "{{ proto_port.split(':')[0]  }}"
-      ignore_errors: true
       ansible.builtin.debug:
         msg:
           - "{{ proto_port }}"
-          - "{{ wsus_server }}"
           - "{{ wsus_proto }}"
+          - "{{ wsus_server }}"
           - "{{ wsus_port }}"
       when:
         - wsus_url is defined
