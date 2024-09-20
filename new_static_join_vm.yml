@@ -33,32 +33,32 @@
     #     name: wuauserv
     #     state: stopped
 
-    - name: Windows Update - Get WSUS server
-      ansible.windows.win_reg_stat:
-        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-        name: WUServer
-      register: wsus_url
+    # - name: Windows Update - Get WSUS server
+    #   ansible.windows.win_reg_stat:
+    #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
+    #     name: WUServer
+    #   register: wsus_url
 
-    - name: Print wsus_url
-      ignore_errors: true
-      vars:
-        - proto_port: "{{ wsus_url.value.split('//')[1]  }}"
-        - wsus_port: "{{ proto_port.split(':')[1]  }}"
-        - wsus_proto: "{{ wsus_url.value.split(':')[0]  }}"
-        - wsus_server: "{{ proto_port.split(':')[0]  }}"
+    # - name: Print wsus_url
+    #   ignore_errors: true
+    #   vars:
+    #     - proto_port: "{{ wsus_url.value.split('//')[1]  }}"
+    #     - wsus_port: "{{ proto_port.split(':')[1]  }}"
+    #     - wsus_proto: "{{ wsus_url.value.split(':')[0]  }}"
+    #     - wsus_server: "{{ proto_port.split(':')[0]  }}"
 
-      ansible.builtin.debug:
-        msg:
-          - "{{ proto_port }}"
-          - "{{ wsus_proto }}"
-          - "{{ wsus_server }}"
-          - "{{ wsus_port }}"
-      when:
-        - wsus_server is defined
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "{{ proto_port }}"
+    #       - "{{ wsus_proto }}"
+    #       - "{{ wsus_server }}"
+    #       - "{{ wsus_port }}"
+    #   when:
+    #     - wsus_server is defined
 
-    - name: Windows Update - Get WSUS server
-      ansible.windows.win_shell: |
-        whoami.exe /all
+    #    - name: Windows Update - Get WSUS server
+    #     ansible.windows.win_shell: |
+    #      whoami.exe /all
     # $remove = Remove-Item "$env:SystemRoot\SoftwareDistribution" -Recurse -Force -ErrorAction SilentlyContinue
     # $remove
     # - name: Windows Update - Remove AccountDomainSid
@@ -99,10 +99,10 @@
     #     arguments: /install /passive /norestart
     #     state: present
 
-    - name: Stop Windows Update service
-      ansible.windows.win_service:
-        name: wuauserv
-        state: started
+    # - name: Stop Windows Update service
+    #   ansible.windows.win_service:
+    #     name: wuauserv
+    #     state: started
 
     - name: Windows Update - Get WSUS server
       ansible.windows.win_shell: |
@@ -159,7 +159,8 @@
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates.stdout }}"
+          - "{{ pending_updates.pending_updates }}"
+          - "{{ pending_updates }}"
       when:
         - pending_updates is defined
 
