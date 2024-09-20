@@ -25,42 +25,19 @@
 
     #ansible_winrm_kerberos_delegation: true
   tasks:
-    - name: Ensure windows host is reachable
-      ansible.windows.win_ping:
+    # - name: Ensure windows host is reachable
+    #   ansible.windows.win_ping:
 
-    - name: Stop Windows Update service
-      ansible.windows.win_service:
-        name: wuauserv
-        state: stopped
+    # - name: Stop Windows Update service
+    #   ansible.windows.win_service:
+    #     name: wuauserv
+    #     state: stopped
 
     - name: Windows Update - Get WSUS server
       ansible.windows.win_reg_stat:
-        path: HKLM:\\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
         name: AUOptions
       register: wsus_url
-
-    - name: Obtain information about a registry key using short form
-      ansible.windows.win_reg_stat:
-        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion
-      register: current_version
-
-    - name: Obtain information about a registry key property
-      ansible.windows.win_reg_stat:
-        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion
-        name: CommonFilesDir
-      register: common_files_dir
-
-    - name: Print current_version
-      ignore_errors: true
-      ansible.builtin.debug:
-        msg: "{{ current_version }}"
-      when: current_version is defined
-
-    - name: Print common_files_dir
-      ignore_errors: true
-      ansible.builtin.debug:
-        msg: "{{ common_files_dir }}"
-      when: common_files_dir is defined
 
     - name: Print wsus_url
       ignore_errors: true
@@ -68,43 +45,43 @@
         msg: "{{ wsus_url }}"
       when: wsus_url is defined
 
-    - name: Windows Update - Remove AccountDomainSid
-      ansible.windows.win_regedit:
-        path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-        name: AccountDomainSid
-        state: absent
+    # - name: Windows Update - Remove AccountDomainSid
+    #   ansible.windows.win_regedit:
+    #     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
+    #     name: AccountDomainSid
+    #     state: absent
 
-    - name: Windows Update - Remove PingID
-      ansible.windows.win_regedit:
-        path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-        name: PingID
-        state: absent
+    # - name: Windows Update - Remove PingID
+    #   ansible.windows.win_regedit:
+    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
+    #     name: PingID
+    #     state: absent
 
-    - name: Windows Update - Remove SusClientId
-      ansible.windows.win_regedit:
-        path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-        name: SusClientId
-        state: absent
+    # - name: Windows Update - Remove SusClientId
+    #   ansible.windows.win_regedit:
+    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
+    #     name: SusClientId
+    #     state: absent
 
-    - name: Windows Update - Remove SusClientIDValidation
-      ansible.windows.win_regedit:
-        path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-        name: SusClientIDValidation
-        state: absent
+    # - name: Windows Update - Remove SusClientIDValidation
+    #   ansible.windows.win_regedit:
+    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
+    #     name: SusClientIDValidation
+    #     state: absent
 
-    - name: Install the Visual C thingy
-      ansible.windows.win_package:
-        path: https://aka.ms/vs/17/release/vc_redist.x64.exe
-        product_id: "{59CED48F-EBFE-480C-8A38-FC079C2BEC0F}"
-        arguments: /install /passive /norestart
-        state: present
+    # - name: Install the Visual C thingy
+    #   ansible.windows.win_package:
+    #     path: https://aka.ms/vs/17/release/vc_redist.x64.exe
+    #     product_id: "{59CED48F-EBFE-480C-8A38-FC079C2BEC0F}"
+    #     arguments: /install /passive /norestart
+    #     state: present
 
-    - name: Install the Visual C thingy
-      ansible.windows.win_package:
-        path: https://aka.ms/vs/17/release/vc_redist.x86.exe
-        product_id: "{0C3457A0-3DCE-4A33-BEF0-9B528C557771}"
-        arguments: /install /passive /norestart
-        state: present
+    # - name: Install the Visual C thingy
+    #   ansible.windows.win_package:
+    #     path: https://aka.ms/vs/17/release/vc_redist.x86.exe
+    #     product_id: "{0C3457A0-3DCE-4A33-BEF0-9B528C557771}"
+    #     arguments: /install /passive /norestart
+    #     state: present
     # - name: Install all security, critical, and rollup updates without a scheduled task
     # ansible.windows.win_updates:
     #  category_names:
