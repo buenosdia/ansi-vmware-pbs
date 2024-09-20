@@ -12,6 +12,7 @@
         name: "{{ vm_name }}.{{ domain }}"
         ansible_connection: winrm
         ansible_winrm_transport: kerberos
+        ansible_user: "{{ your_username }}"
         ansible_port: 5985
         groups: created_vm
 
