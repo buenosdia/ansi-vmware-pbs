@@ -152,7 +152,7 @@
 
         $pending_updates = $Installer.Install()
         }
-        $pending_updates
+        $PendingMissingUpdates
       register: pending_updates
 
     - name: Pending Updates
