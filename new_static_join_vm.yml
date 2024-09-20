@@ -34,7 +34,7 @@
         state: stopped
 
     - name: Windows Update - Get WSUS server
-      ansible.windows.win_reg_stat::
+      ansible.windows.win_reg_stat:
         path: HKLM:\\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
         name: WUServer
       register: wsus_url
