@@ -38,12 +38,16 @@
         path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
         name: WUServer
       register: wsus_url
-
+      vars:
+        proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
+        wsus_server: "{{ proto_port.split(':')[0]  }}"
     - name: Print wsus_url
       ignore_errors: true
       ansible.builtin.debug:
-        msg: "{{ wsus_url.value }}"
-      when: wsus_url is defined
+        msg: "{{ wsus_server }}"
+      when:
+        - wsus_url is defined
+        - wsus_server is defined
 
     # - name: Windows Update - Remove AccountDomainSid
     #   ansible.windows.win_regedit:
