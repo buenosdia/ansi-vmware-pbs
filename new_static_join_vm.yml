@@ -39,12 +39,15 @@
         name: WUServer
       register: wsus_url
 
-    - name: Set vars
-      ansible.builtin.set_fact:
-        proto_port: "{{ wsus_url.value.split('//')[1]  }}"
-        wsus_server: "{{ proto_port.split(':')[0]  }}"
+    # - name: Set vars
+    #   ansible.builtin.set_fact:
+    #     proto_port: "{{ wsus_url.value.split('//')[1]  }}"
+    #     wsus_server: "{{ proto_port.split(':')[0]  }}"
 
     - name: Print wsus_url
+      vars:
+        - proto_port: "{{ wsus_url.value.split('//')[1]  }}"
+        - wsus_server: "{{ proto_port.split(':')[0]  }}"
       ignore_errors: true
       ansible.builtin.debug:
         msg: "{{ wsus_server }}"
