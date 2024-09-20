@@ -46,7 +46,7 @@
         - wsus_port: "{{ proto_port.split(':')[1]  }}"
         - wsus_proto: "{{ wsus_url.value.split(':')[0]  }}"
         - wsus_server: "{{ proto_port.split(':')[0]  }}"
-        - ansible_winrm_kerberos_delegation: true
+
       ansible.builtin.debug:
         msg:
           - "{{ proto_port }}"
@@ -109,10 +109,6 @@
         wuauclt /resetauthorization /detectnow
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
 
-    - name: Get-Certificate - GSIWinRMSSL
-      ansible.windows.win_shell: |
-        Get-Certificate -Template "GSIWinRMSSL" -Url ldap: -CertStoreLocation Cert:\LocalMachine\My
-
     - name: Windows Update - Check
       ansible.windows.win_shell: |
         $UpdateSession = New-Object -ComObject Microsoft.Update.Session
@@ -147,15 +143,23 @@
             }
         }
         })|ConvertTo-JSON
+        $Downloader = $UpdateSession.CreateUpdateDownloader()
+        $Downloader.Updates = $SearchResult
+        $Downloader.Download()
+
+        $Installer = New-Object -ComObject Microsoft.Update.Installer
+        $Installer.Updates = $SearchResult
+
+        $Result = $Installer.Install()
         }
-        write-output $PendingMissingUpdates
+        $pending_updates
       register: pending_updates
 
     - name: Pending Updates
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates.PendingMissingUpdates}}"
+          - "{{ pending_updates}}"
       when:
         - pending_updates is defined
 
