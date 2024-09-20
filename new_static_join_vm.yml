@@ -39,8 +39,30 @@
         name: AUOptions
       register: wsus_url
 
-    - name: Print if virtual machine exists
-      delegate_to: localhost
+    - name: Obtain information about a registry key using short form
+      ansible.windows.win_reg_stat:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion
+      register: current_version
+
+    - name: Obtain information about a registry key property
+      ansible.windows.win_reg_stat:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion
+        name: CommonFilesDir
+      register: common_files_dir
+
+    - name: Print current_version
+      ignore_errors: true
+      ansible.builtin.debug:
+        msg: "{{ current_version }}"
+      when: current_version is defined
+
+    - name: Print common_files_dir
+      ignore_errors: true
+      ansible.builtin.debug:
+        msg: "{{ common_files_dir }}"
+      when: common_files_dir is defined
+
+    - name: Print wsus_url
       ignore_errors: true
       ansible.builtin.debug:
         msg: "{{ wsus_url }}"
