@@ -11,3 +11,9 @@
       ansible.builtin.add_host:
         name: "{{ vm_name }}.{{ domain }}"
         groups: created_vm
+
+- name: Create a VM from a template
+  hosts: created_vm
+  tasks:
+    - name: Ensure windows host is reachable
+      ansible.windows.win_ping:
