@@ -58,7 +58,7 @@
     - name: Windows Update - Get WSUS server
       ansible.windows.win_shell: |
         $remove = Remove-Item "$env:SystemRoot\SoftwareDistribution" -Recurse -Force -ErrorAction SilentlyContinue
-
+        $remove
     # - name: Windows Update - Remove AccountDomainSid
     #   ansible.windows.win_regedit:
     #     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
