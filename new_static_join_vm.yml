@@ -32,5 +32,5 @@
           - SecurityUpdates
           - CriticalUpdates
         state: searched
-        log_path: C:\ansible_wu.txt
+        log_path: C:\Temp\ansible_wu.txt
         #reboot: true
