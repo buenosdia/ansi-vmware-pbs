@@ -57,45 +57,7 @@
 
     - name: Windows Update - Get WSUS server
       ansible.windows.win_shell: |
-        $null = Remove-Item "$env:SystemRoot\SoftwareDistribution\" -Recurse -Force -ErrorAction SilentlyContinue
-
-    # - name: Windows Update - Remove AccountDomainSid
-    #   ansible.windows.win_regedit:
-    #     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-    #     name: AccountDomainSid
-    #     state: absent
-
-    # - name: Windows Update - Remove PingID
-    #   ansible.windows.win_regedit:
-    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-    #     name: PingID
-    #     state: absent
-
-    # - name: Windows Update - Remove SusClientId
-    #   ansible.windows.win_regedit:
-    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-    #     name: SusClientId
-    #     state: absent
-
-    # - name: Windows Update - Remove SusClientIDValidation
-    #   ansible.windows.win_regedit:
-    #     path: HKLM:\\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate
-    #     name: SusClientIDValidation
-    #     state: absent
-
-    # - name: Install the Visual C thingy
-    #   ansible.windows.win_package:
-    #     path: https://aka.ms/vs/17/release/vc_redist.x64.exe
-    #     product_id: "{59CED48F-EBFE-480C-8A38-FC079C2BEC0F}"
-    #     arguments: /install /passive /norestart
-    #     state: present
-
-    # - name: Install the Visual C thingy
-    #   ansible.windows.win_package:
-    #     path: https://aka.ms/vs/17/release/vc_redist.x86.exe
-    #     product_id: "{0C3457A0-3DCE-4A33-BEF0-9B528C557771}"
-    #     arguments: /install /passive /norestart
-    #     state: present
+        $null = Remove-Item "$env:SystemRoot\SoftwareDistribution" -Recurse -Force -ErrorAction SilentlyContinue
 
     - name: Stop Windows Update service
       ansible.windows.win_service:
