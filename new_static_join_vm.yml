@@ -149,7 +149,7 @@
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates }}"
+          - "{{ pending_updates.stdout | from_json}}"
       when:
         - pending_updates is defined
 
