@@ -41,7 +41,7 @@
 
     - name: Set vars
       ansible.builtin.set_fact:
-        proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
+        proto_port: "{{ wsus_url.value.split('//')[1]  }}"
         wsus_server: "{{ proto_port.split(':')[0]  }}"
 
     - name: Print wsus_url
