@@ -46,6 +46,7 @@
         - wsus_port: "{{ proto_port.split(':')[1]  }}"
         - wsus_proto: "{{ wsus_url.value.split(':')[0]  }}"
         - wsus_server: "{{ proto_port.split(':')[0]  }}"
+        - ansible_winrm_kerberos_delegation: true
       ansible.builtin.debug:
         msg:
           - "{{ proto_port }}"
