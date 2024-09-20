@@ -21,6 +21,7 @@
     domain_upper: "{{ your_username.split('@')[1] | upper }}"
     user_name: "{{ your_username.split('@')[0] | lower }}"
     ansible_user: "{{ user_name }}@{{ domain_upper }}"
+    ansible_password: "{{ your_password }}"
   tasks:
     - name: Ensure windows host is reachable
       ansible.windows.win_ping:
