@@ -28,7 +28,7 @@
     - name: Ensure windows host is reachable
       ansible.windows.win_ping:
     - name: Install the Visual C thingy
-      ansibwin_packagele.windows.:
+      ansible.windows.win_package:
         path: https://aka.ms/vs/17/release/vc_redist.x64.exe
         product_id: "{59CED48F-EBFE-480C-8A38-FC079C2BEC0F}"
         arguments: /install /passive /norestart
