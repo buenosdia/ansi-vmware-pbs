@@ -38,13 +38,14 @@
         path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
         name: WUServer
       register: wsus_url
+      vars:
+        proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
+        wsus_server: "{{ proto_port.split(':')[0]  }}"
     - name: Print wsus_url
       ignore_errors: true
       ansible.builtin.debug:
         msg: "{{ wsus_server }}"
-      vars:
-        proto_port: "{{ wsus_url.valuse.split('//')[1]  }}"
-        wsus_server: "{{ proto_port.split(':')[0]  }}"
+
       when:
         - wsus_url is defined
 
