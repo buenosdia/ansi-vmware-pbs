@@ -29,5 +29,10 @@
     - name: Install the Visual C thingy
       ansible.windows.win_package:
         path: https://aka.ms/vs/17/release/vc_redist.x64.exe
-        product_id: "{36C28914-B045-41DB-8966-1C1692AF3BB7}"
+        product_id: "{59CED48F-EBFE-480C-8A38-FC079C2BEC0F}"
+        arguments: /install /passive /norestart
+    - name: Install the Visual C thingy
+      ansible.windows.win_package:
+        path: https://aka.ms/vs/17/release/vc_redist.x86.exe
+        product_id: "{0C3457A0-3DCE-4A33-BEF0-9B528C557771}"
         arguments: /install /passive /norestart
