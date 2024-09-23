@@ -121,10 +121,13 @@
           $WsusSearcher = $UpdateSession.CreateUpdateSearcher()
           try { 
               $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Updates)
+            $updatesToDownload = New-Object -com "Microsoft.Update.UpdateColl"
+          foreach ($update in $IsHiddenInstalled[0]){
+          $null = $updatesToDownload.Add($update)
+          }
           }
           catch {
-              $IsHiddenInstalled = $null
-              'No Pending Updates'
+              $IsHiddenInstalled = 'No Pending Updates'
           }
           if ($null -ne $IsHiddenInstalled) {
 
@@ -150,11 +153,11 @@
                       }
                   })
                 $Downloader = $UpdateSession.CreateUpdateDownloader()
-                $Downloader.Updates = $IsHiddenInstalled
+                $Downloader.Updates = $updatesToDownload
                 ($Downloader.Download())
 
                 $Installer = New-Object -ComObject Microsoft.Update.Installer
-                $Installer.Updates = $IsHiddenInstalled
+                $Installer.Updates = $updatesToDownload
           try{
                 $pending_updates = ($Installer.Install())
 
