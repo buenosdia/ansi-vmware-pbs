@@ -30,9 +30,7 @@
   delegate_to: localhost
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
-  when:
-    - destructive == "True"
-    - vm_exists is defined
+  when: destructive == "True" and vm_exists is defined
 
 - name: Remove virtual machine from inventory
   community.vmware.vmware_guest:
@@ -80,8 +78,7 @@
     wait_for_ip_address: true
   delegate_to: localhost
   register: dynamic_vm
-  when:
-    - vm_dhcpstatic == 'dhcp'
+  when: vm_dhcpstatic == 'dhcp'
 
 - name: Clone VM from template with static IP
   community.vmware.vmware_guest:
@@ -163,11 +160,7 @@
     wait_for_customization: true
     wait_for_customization_timeout: 600
   register: static_vm
-  delegate_to: localhost
-  when:
-    - vm_dhcpstatic == 'static'
-    #- vm_exists is not defined
-    #- destructive == "True" vm_exists is defined
+  when: vm_dhcpstatic == 'static'
 
 - name: Copy file to vm
   community.vmware.vmware_guest_file_operation:
@@ -187,6 +180,7 @@
       overwrite: true
     retries: 1
     delay: 3
+  when: static_vm is defined
 
 - name: Run the Powershell script to generate a new cert and enable 5986 port in firewall
   community.vmware.vmware_vm_shell:
@@ -205,3 +199,4 @@
     wait_for_process: true
     retries: 1
     delay: 3
+  when: static_vm is defined
