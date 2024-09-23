@@ -115,7 +115,7 @@
 
     - name: Windows Update - Check
       ansible.windows.win_powershell:
-        script: "{{ lookup('file'), 'Script.ps1' }}"
+        script: "{{ lookup('file'), 'pendingupdates.ps1' }}"
         arguments:
           - -ExecutionPolicy
           - Bypass
