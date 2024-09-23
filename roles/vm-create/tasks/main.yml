@@ -145,18 +145,18 @@
       domainadmin: "{{ your_username }}"
       domainadminpassword: "{{ your_password }}"
       timezone: "{{ timezone }}"
-      runonce:
-        - net user Administrator {{ local_admin | default('SomedingRando01!') }}
-        - net user Administrator /ACTIVE:YES /LOGONPASSWORDCHG:NO /EXPIRES:NEVER /PASSWORDREQ:YES
-        - WMIC USERACCOUNT WHERE "Name='Administrator'" SET PasswordExpires=FALSE
-        - gpupdate /force
-        - cscript C:\Windows\System32\slmgr.vbs /ato
-        - "winrm quickconfig -force"
-        - 'winrm set winrm/config/service/auth @{Basic="true"}'
-        - "winrm quickconfig -transport:https -quiet"
-        - 'winrm set winrm/config @{MaxEnvelopeSizekb="100000"}'
-        - "netsh advfirewall set allprofiles state off"
-        # - '"powershell.exe -ExecutionPolicy Unrestricted -File C:\Windows\Temp\ConfigureRemotingforAnsible.ps1"'
+      # runonce:
+      #   - net user Administrator {{ local_admin | default('SomedingRando01!') }}
+      #   - net user Administrator /ACTIVE:YES /LOGONPASSWORDCHG:NO /EXPIRES:NEVER /PASSWORDREQ:YES
+      #   - WMIC USERACCOUNT WHERE "Name='Administrator'" SET PasswordExpires=FALSE
+      #   - gpupdate /force
+      #   - cscript C:\Windows\System32\slmgr.vbs /ato
+      #   - "winrm quickconfig -force"
+      #   - 'winrm set winrm/config/service/auth @{Basic="true"}'
+      #   - "winrm quickconfig -transport:https -quiet"
+      #   - 'winrm set winrm/config @{MaxEnvelopeSizekb="100000"}'
+      #   - "netsh advfirewall set allprofiles state off"
+      # - '"powershell.exe -ExecutionPolicy Unrestricted -File C:\Windows\Temp\ConfigureRemotingforAnsible.ps1"'
       existing_vm: true
     wait_for_ip_address: true
     wait_for_ip_address_timeout: 600

@@ -65,6 +65,8 @@ if ((Get-WSManInstance -ResourceURI winrm/config/listener -Enumerate).Transport 
     }
 }
 
+net user Administrator /ACTIVE:YES /LOGONPASSWORDCHG:NO /EXPIRES:NEVER /PASSWORDREQ:YES
+WMIC USERACCOUNT WHERE "Name='Administrator'" SET PasswordExpires=FALSE
 $null = Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force    
 
 REG LOAD HKU\DefaultUser C:\Users\Default\NTUSER.DAT
