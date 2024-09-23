@@ -108,10 +108,11 @@
       ansible.windows.win_shell: |
         wuauclt /resetauthorization /detectnow
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
+      register: detect_now
 
     - name: Windows Update - Check
       ansible.windows.win_powershell:
-        script: roles/files/pendingupdates.ps1
+        script: "roles/files/pendingupdates.ps1"
       arguments:
         - -ExecutionPolicy
         - Bypass
