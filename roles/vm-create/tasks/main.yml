@@ -7,7 +7,7 @@
     hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
-    name: "{{ vm_name }}"
+    name: "{{ vm_name  | upper }}"
     datacenter: "{{ datacenter }}"
   ignore_errors: true
   throttle: 1
@@ -39,7 +39,7 @@
     hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
-    name: "{{ vm_name }}"
+    name: "{{ vm_name  | upper }}"
     datacenter: "{{ datacenter }}"
     state: absent
     state_change_timeout: 120
@@ -55,7 +55,7 @@
     hostname: "{{ vcenter_hostname }}"
     username: "{{ your_username }}"
     password: "{{ your_password }}"
-    name: "{{ vm_name }}"
+    name: "{{ vm_name  | upper }}"
     datacenter: "{{ datacenter }}"
     folder: "{{ vm_folder }}"
     template: "{{ vm_template }}"
@@ -90,7 +90,7 @@
     password: "{{ your_password }}"
     datacenter: "{{ datacenter }}"
     # customization_spec: "{{ cust_spec }}"
-    name: "{{ vm_name }}"
+    name: "{{ vm_name  | upper }}"
     folder: "{{ vm_folder }}"
     template: "{{ vm_template }}"
     state: powered-on
@@ -170,7 +170,7 @@
     username: "{{ your_username }}"
     password: "{{ your_password }}"
     validate_certs: false
-    vm_id: "{{ vm_name }}"
+    vm_id: "{{ vm_name  | upper }}"
     datacenter: "{{ datacenter }}"
     cluster: "{{ cluster }}"
     folder: "{{ vm_folder }}"
@@ -190,7 +190,7 @@
     datacenter: "{{ datacenter }}"
     cluster: "{{ cluster }}"
     folder: "{{ vm_folder }}"
-    vm_id: "{{ vm_name }}"
+    vm_id: "{{ vm_name  | upper }}"
     validate_certs: false
     vm_username: "Administrator"
     vm_password: "{{ local_admin | default('SomedingRando01!') }}"
