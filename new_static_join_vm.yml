@@ -20,7 +20,7 @@
   vars:
     domain_upper: "{{ your_username.split('@')[1] | upper }}"
     user_name: "{{ your_username.split('@')[0] | lower }}"
-    ansible_user: "{{user_name}}"
+    ansible_user: "{{user_name}}@{{domain_upper}}"
     ansible_password: "{{ your_password }}"
     ansible_become: true
     ansible_become_method: runas
