@@ -22,7 +22,9 @@
     user_name: "{{ your_username.split('@')[0] | lower }}"
     ansible_user: "{{ user_name }}@{{ domain_upper }}"
     ansible_password: "{{ your_password }}"
-
+    become_method: runas
+    become_flags: logon_type=interactive
+    become_user: "{{domain_upper}}\{{user_name}}"
     #ansible_winrm_kerberos_delegation: true
   tasks:
     # - name: Ensure windows host is reachable
