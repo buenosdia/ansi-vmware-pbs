@@ -166,8 +166,8 @@
   delegate_to: localhost
   when:
     - vm_dhcpstatic == 'static'
-    - vm_exists is not defined
-    - destructive == "True" and vm_exists is defined
+    #- vm_exists is not defined
+    #- destructive == "True" vm_exists is defined
 
 - name: Copy file to vm
   community.vmware.vmware_guest_file_operation:
