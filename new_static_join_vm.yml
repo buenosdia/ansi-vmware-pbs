@@ -117,14 +117,13 @@
       ansible.windows.win_powershell:
         script: |
           $UpdateSession = New-Object -ComObject Microsoft.Update.Session
-          $UpdateServiceManager = New-Object -ComObject Microsoft.Update.ServiceManager 
           $WsusSearcher = $UpdateSession.CreateUpdateSearcher()
           try { 
-              $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Update)
+              $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Updates)
           }
           catch {
               $IsHiddenInstalled = $null
-              $JSON = = @{Result = 'No Pending Updates' } | ConvertTo-Json
+              $JSON = @{Result = 'No Pending Updates' } | ConvertTo-Json
           }
           if ($null -ne $IsHiddenInstalled) {
 
