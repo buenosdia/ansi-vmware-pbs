@@ -112,8 +112,7 @@
 
     - name: Windows Update - Check
       ansible.windows.win_powershell:
-        script: |
-          $env:computername
+        script: "roles/files/pendingupdates.ps1"
         arguments:
           - -ExecutionPolicy
           - Bypass
