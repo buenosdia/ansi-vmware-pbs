@@ -155,7 +155,7 @@
 
                   }
 
-                  $Output = @{UpdateCount = $AllUpdates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json  -Depth 2
+                  $Output = @{UpdateCount = $AllUpdates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json  -Depth 4
 
                   $Downloader = $UpdateSession.CreateUpdateDownloader()
                   $Downloader.Updates = $DownloadUpDates
