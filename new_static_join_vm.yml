@@ -114,9 +114,9 @@
       ansible.windows.win_powershell:
         script: |
           $env:computername
-      arguments:
-        - -ExecutionPolicy
-        - Bypass
+        arguments:
+          - -ExecutionPolicy
+          - Bypass
       register: pending_updates
 
       # ansible.windows.win_shell: |
