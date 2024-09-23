@@ -166,7 +166,6 @@
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates.cmd }}"
           - "{{ pending_updates }}"
       when:
         - pending_updates is defined
