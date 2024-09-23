@@ -159,7 +159,7 @@
                 }else{
               @($PendingMissingUpdates | ConvertTo-Json) 
               }
-              catch{
+             } catch{
                $Error[0].Exception.Message
               }
           }
