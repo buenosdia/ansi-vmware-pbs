@@ -110,9 +110,12 @@
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
       register: detect_now
 
+    - name: Run the script
+      ansible.builtin.script: "roles/files/pendingupdates.ps1"
+
     - name: Windows Update - Check
       ansible.windows.win_powershell:
-        script: "roles/files/pendingupdates.ps1"
+        script: "{{ lookup('file'), 'Script.ps1' }}"
         arguments:
           - -ExecutionPolicy
           - Bypass
