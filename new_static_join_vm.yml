@@ -110,50 +110,56 @@
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
 
     - name: Windows Update - Check
-      ansible.windows.win_shell: |
-        $UpdateSession = New-Object -ComObject Microsoft.Update.Session
-        $UpdateServiceManager = New-Object -ComObject Microsoft.Update.ServiceManager 
-        $WsusSearcher = $UpdateSession.CreateUpdateSearcher()
-         try { 
-        $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Update)
-        }catch{
-        $IsHiddenInstalled = $null
-        $PendingMissingUpdates = 'No Pending Updates'
-        }
-         if($null -ne $IsHiddenInstalled){
-
-            $PendingMissingUpdates =   @($IsHiddenInstalled| ForEach-Object {
-
-        if ($null -ne $_) {
-
-            [pscustomobject]@{
-                Date                     = Get-Date -Format "MM-dd-yyyy HH:mm:ss"
-                Computername             = $env:ComputerName.ToUpper() 
-                Title                    = $_.Title
-                Description              = $_.Description
-                CveIDs                   = $($_.CveIDs -join ',')
-                KB                       = $($_.KBArticleIDs -join ',')
-                Severity                 = $_.MsrcSeverity
-                LastDeploymentChangeTime = ( $_.LastDeploymentChangeTime ).tostring()
-                UninstallationNotes      = $_.UninstallationNotes
-                Categories               = $($_.categories).Name -join ', '
-                Type                     = $(switch ($_.type) { 1 { 'Software' }2 { 'Driver' } })
-                SupportURL               = $_.SupportURL
-
-            }
-        }
-        })
-        $Downloader = $UpdateSession.CreateUpdateDownloader()
-        $Downloader.Updates = $IsHiddenInstalled
-        $Downloader.Download()
-
-        $Installer = New-Object -ComObject Microsoft.Update.Installer
-        $Installer.Updates = $IsHiddenInstalled
-
-        $pending_updates = $Installer.Install()
-        }
-        $PendingMissingUpdates
+      ansible.windows.win_powershell:
+        script: roles/files/pendingupdates.ps1
+      arguments:
+        - -ExecutionPolicy
+        - Bypass
       register: pending_updates
+
+      # ansible.windows.win_shell: |
+      #   $UpdateSession = New-Object -ComObject Microsoft.Update.Session
+      #   $UpdateServiceManager = New-Object -ComObject Microsoft.Update.ServiceManager
+      #   $WsusSearcher = $UpdateSession.CreateUpdateSearcher()
+      #    try {
+      #   $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Update)
+      #   }catch{
+      #   $IsHiddenInstalled = $null
+      #   $PendingMissingUpdates = 'No Pending Updates'
+      #   }
+      #    if($null -ne $IsHiddenInstalled){
+
+      #       $PendingMissingUpdates =   @($IsHiddenInstalled| ForEach-Object {
+
+      #   if ($null -ne $_) {
+
+      #       [pscustomobject]@{
+      #           Date                     = Get-Date -Format "MM-dd-yyyy HH:mm:ss"
+      #           Computername             = $env:ComputerName.ToUpper()
+      #           Title                    = $_.Title
+      #           Description              = $_.Description
+      #           CveIDs                   = $($_.CveIDs -join ',')
+      #           KB                       = $($_.KBArticleIDs -join ',')
+      #           Severity                 = $_.MsrcSeverity
+      #           LastDeploymentChangeTime = ( $_.LastDeploymentChangeTime ).tostring()
+      #           UninstallationNotes      = $_.UninstallationNotes
+      #           Categories               = $($_.categories).Name -join ', '
+      #           Type                     = $(switch ($_.type) { 1 { 'Software' }2 { 'Driver' } })
+      #           SupportURL               = $_.SupportURL
+
+      #       }
+      #   }
+      #   })
+      #   $Downloader = $UpdateSession.CreateUpdateDownloader()
+      #   $Downloader.Updates = $IsHiddenInstalled
+      #   $Downloader.Download()
+
+      #   $Installer = New-Object -ComObject Microsoft.Update.Installer
+      #   $Installer.Updates = $IsHiddenInstalled
+
+      #   $pending_updates = $Installer.Install()
+      #   }
+      #   $PendingMissingUpdates
 
     - name: Pending Updates
       ignore_errors: true
