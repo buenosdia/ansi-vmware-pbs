@@ -62,7 +62,7 @@
 
     - name: Windows Update - Get WSUS server
       ansible.windows.win_shell: |
-        whoami.exe /all
+        #whoami.exe /all
         $remove = Remove-Item "$env:SystemRoot\SoftwareDistribution" -Recurse -Force -ErrorAction SilentlyContinue
         $remove
 
@@ -124,9 +124,9 @@
               $AvailableUpdates = @($UpdateSearcher.Search("IsHidden=0 and IsInstalled=0 and Type != 'Driver'").Updates)
               $DownloadUpDates = New-Object -com "Microsoft.Update.UpdateColl"
               $Date = Get-Date -Format "MM-dd-yyyy hh:mm:ss tt"
-              $RebootRequired = $False
+              $RebootRequired = (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA 0) 
 
-              If ($AvailableUpdates.Count -ge 1 -and (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA 0) -ne $True) {
+              If ($AvailableUpdates.Count -ge 1 -and $RebootRequired -ne $True) {
 
                   $AllUpdates = Foreach ($AvailableUpdate in $AvailableUpdates) {
                       $null = $AvailableUpdate.AcceptEula()
@@ -173,15 +173,15 @@
 
                   }
                             
-                  $Output = @{UpdateCount = $DownloadUpDates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json
+                  $Output=@{UpdateCount=$DownloadUpDates.Count;Updates=$AllUpdates;RebootRequired=$RebootRequired}|ConvertTo-Json
               }
               ELSE {
 
-                  $Output = @{UpdateCount = $AvailableUpdates.Count; Updates = $AvailableUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json
+                  $Output=@{UpdateCount=$AvailableUpdates.Count;Updates=$AvailableUpdates;RebootRequired=$RebootRequired } | ConvertTo-Json
 
               }
 
-              Write-Output $Output
+              $Output
 
           }
           catch {
