@@ -151,13 +151,16 @@
 
                 $Installer = New-Object -ComObject Microsoft.Update.Installer
                 $Installer.Updates = $IsHiddenInstalled
-
+          try{
                 $pending_updates = ($Installer.Install())
 
                 if($pending_updates ){
                 pending_updates
                 }else{
               @($PendingMissingUpdates | ConvertTo-Json) 
+              }
+              catch{
+               $Error[0].Exception.Message
               }
           }
           Write-Output $JSON
