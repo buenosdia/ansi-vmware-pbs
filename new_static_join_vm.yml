@@ -234,7 +234,7 @@
           - SecurityUpdates
           - CriticalUpdates
         state: searched
-      log_path: C:\Temp\ansible_wu.txt
+        log_path: C:\Temp\ansible_wu.txt
     #become: true
     #become_method: runas
     #become_flags: logon_type=new_credentials logon_flags=netcredentials_only
