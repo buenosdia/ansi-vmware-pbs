@@ -173,11 +173,11 @@
 
                   }
                             
-                  $Output = @{UpdateCount = $DownloadUpDates.Count; Updates = $DownloadUpDates; RebootRequired = $RebootRequired } | ConvertTo-Json
+                  $Output = @{UpdateCount = $DownloadUpDates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json
               }
               ELSE {
 
-                  $Output = @{UpdateCount = 0; Updates = $null; RebootRequired = $null } | ConvertTo-Json
+                  $Output = @{UpdateCount = 0; Updates = $AvailableUpdates.Count; RebootRequired = $RebootRequired } | ConvertTo-Json
 
               }
 
