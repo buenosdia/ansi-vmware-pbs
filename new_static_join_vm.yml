@@ -163,8 +163,16 @@
 
                   $Installer = New-Object -ComObject Microsoft.Update.Installer
                   $Installer.Updates = $DownloadUpDates
+                            
                   $Installing = ($Installer.Install())
-                  $Output = @{UpdateCount=$DownloadUpDates.Count;Updates=$DownloadUpDates;RebootRequired=$RebootRequired}|ConvertTo-Json
+
+                  if (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired") {
+
+                      $RebootRequired = $True
+
+                  }
+                            
+                  $Output = @{UpdateCount = $DownloadUpDates.Count; Updates = $DownloadUpDates; RebootRequired = $RebootRequired } | ConvertTo-Json
               }
               ELSE {
 
@@ -177,18 +185,19 @@
           }
           catch {
 
-              ($Error[0] | Select * | ConvertTo-Json -depth 4)
+                        ($Error[0] | Select * | ConvertTo-Json -depth 4)
           }
         arguments:
           - -ExecutionPolicy
           - Bypass
-      register: pending_updates
+      register: updates_installed
 
     - name: Windows Update - Download
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates }}"
+          - "{{ updates_installed }}"
+          - "Reboot required: {{ updates_installed.RebootRequired }}"
 
     # ansible.windows.win_shell: |
     #   $UpdateSession = New-Object -ComObject Microsoft.Update.Session
