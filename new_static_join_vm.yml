@@ -112,7 +112,8 @@
 
     - name: Windows Update - Check
       ansible.windows.win_powershell:
-        script: "$env:computername"
+        script: |
+          $env:computername
       arguments:
         - -ExecutionPolicy
         - Bypass
