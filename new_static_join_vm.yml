@@ -110,9 +110,6 @@
         (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
       register: detect_now
 
-    - name: Run the script
-      ansible.builtin.script: "roles/files/pendingupdates.ps1"
-
     - name: Windows Update - Check
       ansible.windows.win_powershell:
         script: |
@@ -148,15 +145,20 @@
                           }
                       }
                   })
-              #  $Downloader = $UpdateSession.CreateUpdateDownloader()
-              #  $Downloader.Updates = $IsHiddenInstalled
-              #  $Downloader.Download()
+                $Downloader = $UpdateSession.CreateUpdateDownloader()
+                $Downloader.Updates = $IsHiddenInstalled[0]
+                $Downloader.Download()
 
-              #  $Installer = New-Object -ComObject Microsoft.Update.Installer
-              #  $Installer.Updates = $IsHiddenInstalled
+                $Installer = New-Object -ComObject Microsoft.Update.Installer
+                $Installer.Updates = $IsHiddenInstalled
 
-              #  $pending_updates = $Installer.Install()
+                $pending_updates = ($Installer.Install())
+
+                if($pending_updates ){
+                pending_updates
+                }else{}
               @($PendingMissingUpdates | ConvertTo-Json) 
+              }
           }
           Write-Output $JSON
         arguments:
