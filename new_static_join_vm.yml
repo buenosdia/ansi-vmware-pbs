@@ -162,7 +162,7 @@
                 $pending_updates = ($Installer.Install())
 
                 if($pending_updates ){
-                pending_updates
+                $pending_updates
                 }else{
               @($PendingMissingUpdates | ConvertTo-Json) 
               }
