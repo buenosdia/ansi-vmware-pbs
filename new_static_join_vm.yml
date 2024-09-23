@@ -108,73 +108,80 @@
     #     name: wuauserv
     #     state: started
 
-    # - name: Windows Update - Get WSUS server
-    #   ansible.windows.win_shell: |
-    #     wuauclt /resetauthorization /detectnow
-    #     (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
-    #   register: detect_now
+    - name: Windows Update - Get WSUS server
+      ansible.windows.win_shell: |
+        wuauclt /resetauthorization /detectnow
+        (New-Object -ComObject Microsoft.Update.AutoUpdate).DetectNow()
+      register: detect_now
 
-    # - name: Windows Update - Check
-    #   ansible.windows.win_powershell:
-    #     script: |
-    #       $UpdateSession = New-Object -ComObject Microsoft.Update.Session
-    #       $WsusSearcher = $UpdateSession.CreateUpdateSearcher()
-    #       try {
-    #           $IsHiddenInstalled = @($WsusSearcher.Search("IsHidden=0 and IsInstalled=0").Updates)
-    #         $updatesToDownload = New-Object -com "Microsoft.Update.UpdateColl"
-    #       foreach ($update in $IsHiddenInstalled[0]){
-    #       $null = $updatesToDownload.Add($update)
-    #       }
-    #       }
-    #       catch {
-    #           $IsHiddenInstalled = 'No Pending Updates'
-    #       }
-    #       if ($null -ne $IsHiddenInstalled) {
+    - name: Windows Update - Check
+      ansible.windows.win_powershell:
+        script: |
+          $UpdateSession = New-Object -ComObject Microsoft.Update.Session
+          $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
+          $AvailableUpdates = @($UpdateSearcher.Search("IsHidden=0 and IsInstalled=0 and Type != 'Driver'").Updates)
+          $DownloadUpDates = New-Object -com "Microsoft.Update.UpdateColl"
+          $Date = Get-Date -Format "MM-dd-yyyy hh:mm:ss tt"
+          $RebootRequired = $False
 
-    #           $PendingMissingUpdates = @($IsHiddenInstalled | ForEach-Object {
+          If ($AvailableUpdates.Count -ge 1) {
 
-    #                   if ($null -ne $_) {
+              $AllUpdates = Foreach ($AvailableUpdate in $AvailableUpdates) {
+                  #$null = $AvailableUpdate.AcceptEula()
+                  #$null = $DownloadUpDates.Add($AvailableUpdate)
 
-    #                       [pscustomobject]@{
-    #                           Date                     = Get-Date -Format "MM-dd-yyyy HH:mm:ss"
-    #                           Computername             = $env:ComputerName.ToUpper()
-    #                           Title                    = $_.Title
-    #                           Description              = $_.Description
-    #                           CveIDs                   = $($_.CveIDs -join ',')
-    #                           KB                       = $($_.KBArticleIDs -join ',')
-    #                           Severity                 = $_.MsrcSeverity
-    #                           LastDeploymentChangeTime = ( $_.LastDeploymentChangeTime ).tostring()
-    #                           UninstallationNotes      = $_.UninstallationNotes
-    #                           Categories               = $($_.categories).Name -join ', '
-    #                           Type                     = $(switch ($_.type) { 1 { 'Software' }2 { 'Driver' } })
-    #                           SupportURL               = $_.SupportURL
+                  [pscustomobject]@{
+                      Date                     = "$Date"
+                      Computername             = "$($env:ComputerName.ToUpper())"
+                      Title                    = "$($AvailableUpdate.Title)"
+                      Description              = "$($AvailableUpdate.Description)"
+                      CveIDs                   = "$(($AvailableUpdate.CveIDs -join ','))"
+                      KB                       = "$(($AvailableUpdate.KBArticleIDs -join ','))"
+                      Severity                 = "$($AvailableUpdate.MsrcSeverity)"
+                      LastDeploymentChangeTime = "$(($AvailableUpdate.LastDeploymentChangeTime ).tostring())"
+                      UninstallationNotes      = "$($AvailableUpdate.UninstallationNotes)"
+                      Categories               = "$(($AvailableUpdate.categories).Name -join ', ')"
+                      Type                     = "$($(switch ($AvailableUpdate.type) { 1 { 'Software' }2 { 'Driver' } }))"
+                      SupportURL               = "$($AvailableUpdate.SupportURL)"
+                      Downloaded               = $($AvailableUpdate.IsDownloaded)
+                      Installed                = $($AvailableUpdate.IsInstalled)
+                      RebootRequired           = $($AvailableUpdate.RebootRequired)
+                  }
 
-    #                       }
-    #                   }
-    #               })
-    #             $Downloader = $UpdateSession.CreateUpdateDownloader()
-    #             $Downloader.Updates = $updatesToDownload
-    #             ($Downloader.Download())
+                  if ($AvailableUpdate.RebootRequired -eq $True -and $RebootRequired -eq $False) {
+                      $RebootRequired = $True
+                  }
 
-    #             $Installer = New-Object -ComObject Microsoft.Update.Installer
-    #             $Installer.Updates = $updatesToDownload
-    #       try{
-    #             $pending_updates = ($Installer.Install())
+              }
 
-    #             if($pending_updates ){
-    #             $pending_updates
-    #             }else{
-    #           @($PendingMissingUpdates | ConvertTo-Json)
-    #           }
-    #          } catch{
-    #            $Error | select *
-    #           }
-    #       }
-    #       Write-Output $JSON
-    #     arguments:
-    #       - -ExecutionPolicy
-    #       - Bypass
-    #   register: pending_updates
+              $Output = @{UpdateCount = $AllUpdates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json  -Depth 2
+
+              $Downloader = $UpdateSession.CreateUpdateDownloader()
+              $Downloader.Updates = $DownloadUpDates
+              $Downloading = ($Downloader.Download())
+
+              $Installer = New-Object -ComObject Microsoft.Update.Installer
+              $Installer.Updates = $DownloadUpDates
+              $Installing = ($Installer.Install())
+
+          }
+          ELSE {
+
+              $Output = @{UpdateCount = 0; Updates = $null; RebootRequired = $null } | ConvertTo-Json
+
+          }
+
+          Write-Output $Output
+        arguments:
+          - -ExecutionPolicy
+          - Bypass
+      register: pending_updates
+
+    - name: Windows Update - Download
+      ignore_errors: true
+      ansible.builtin.debug:
+        msg:
+          - "{{ pending_updates }}"
 
     # ansible.windows.win_shell: |
     #   $UpdateSession = New-Object -ComObject Microsoft.Update.Session
@@ -228,13 +235,13 @@
     #   when:
     #     - pending_updates is defined
 
-    - name: Install all security, critical, and rollup updates without a scheduled task
-      ansible.windows.win_updates:
-        category_names:
-          - SecurityUpdates
-          - CriticalUpdates
-        state: searched
-        log_path: C:\Temp\ansible_wu.txt
+    # - name: Install all security, critical, and rollup updates without a scheduled task
+    #   ansible.windows.win_updates:
+    #     category_names:
+    #       - SecurityUpdates
+    #       - CriticalUpdates
+    #     state: searched
+    #     log_path: C:\Temp\ansible_wu.txt
     #become: true
     #become_method: runas
     #become_flags: logon_type=new_credentials logon_flags=netcredentials_only
