@@ -198,7 +198,7 @@
       ansible.builtin.debug:
         msg:
           - "{{ updates_installed }}"
-        #  - "Reboot required: {{ updates_installed }}"
+          - "Reboot required: {{ updates_installed.output }}"
 
     # - name: Pending Updates
     #   ignore_errors: true
