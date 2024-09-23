@@ -25,6 +25,7 @@
   ansible.builtin.debug:
     msg: "{{ destructive }} {{ vm_exists }}"
   when: vm_exists is not defined
+  register: vm_notexists
 
 - name: Print if virtual machine DESTRUCTIVE
   delegate_to: localhost
@@ -46,6 +47,7 @@
   delegate_to: localhost
   throttle: 1
   when: destructive == "True" and vm_exists is defined
+  register: removed_vm
 
 - name: Clone VM from template with dhcp
   community.vmware.vmware_guest:
