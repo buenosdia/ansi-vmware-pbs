@@ -150,8 +150,8 @@
                       }
                   })
                 $Downloader = $UpdateSession.CreateUpdateDownloader()
-                $Downloader.Updates = $IsHiddenInstalled[0]
-                $Downloader.Download()
+                $Downloader.Updates = $IsHiddenInstalled
+                ($Downloader.Download())
 
                 $Installer = New-Object -ComObject Microsoft.Update.Installer
                 $Installer.Updates = $IsHiddenInstalled
@@ -164,7 +164,7 @@
               @($PendingMissingUpdates | ConvertTo-Json) 
               }
              } catch{
-               $Error[0].Exception.Message
+               $Error | select * 
               }
           }
           Write-Output $JSON
