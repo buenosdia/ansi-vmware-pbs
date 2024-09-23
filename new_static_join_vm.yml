@@ -117,61 +117,66 @@
     - name: Windows Update - Check
       ansible.windows.win_powershell:
         script: |
-          $UpdateSession = New-Object -ComObject Microsoft.Update.Session
-          $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
-          $AvailableUpdates = @($UpdateSearcher.Search("IsHidden=0 and IsInstalled=0 and Type != 'Driver'").Updates)
-          $DownloadUpDates = New-Object -com "Microsoft.Update.UpdateColl"
-          $Date = Get-Date -Format "MM-dd-yyyy hh:mm:ss tt"
-          $RebootRequired = $False
+          try{
+            $UpdateSession = New-Object -ComObject Microsoft.Update.Session
+            $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
+            $AvailableUpdates = @($UpdateSearcher.Search("IsHidden=0 and IsInstalled=0 and Type != 'Driver'").Updates)
+            DownloadUpDates = New-Object -com "Microsoft.Update.UpdateColl"
+            Date = Get-Date -Format "MM-dd-yyyy hh:mm:ss tt"
+            $RebootRequired = $False
 
-          If ($AvailableUpdates.Count -ge 1) {
+            If ($AvailableUpdates.Count -ge 1) {
 
-              $AllUpdates = Foreach ($AvailableUpdate in $AvailableUpdates) {
-                  #$null = $AvailableUpdate.AcceptEula()
-                  #$null = $DownloadUpDates.Add($AvailableUpdate)
+                $AllUpdates = Foreach ($AvailableUpdate in $AvailableUpdates) {
+                    $null = $AvailableUpdate.AcceptEula()
+                    $null = $DownloadUpDates.Add($AvailableUpdate)
 
-                  [pscustomobject]@{
-                      Date                     = "$Date"
-                      Computername             = "$($env:ComputerName.ToUpper())"
-                      Title                    = "$($AvailableUpdate.Title)"
-                      Description              = "$($AvailableUpdate.Description)"
-                      CveIDs                   = "$(($AvailableUpdate.CveIDs -join ','))"
-                      KB                       = "$(($AvailableUpdate.KBArticleIDs -join ','))"
-                      Severity                 = "$($AvailableUpdate.MsrcSeverity)"
-                      LastDeploymentChangeTime = "$(($AvailableUpdate.LastDeploymentChangeTime ).tostring())"
-                      UninstallationNotes      = "$($AvailableUpdate.UninstallationNotes)"
-                      Categories               = "$(($AvailableUpdate.categories).Name -join ', ')"
-                      Type                     = "$($(switch ($AvailableUpdate.type) { 1 { 'Software' }2 { 'Driver' } }))"
-                      SupportURL               = "$($AvailableUpdate.SupportURL)"
-                      Downloaded               = $($AvailableUpdate.IsDownloaded)
-                      Installed                = $($AvailableUpdate.IsInstalled)
-                      RebootRequired           = $($AvailableUpdate.RebootRequired)
-                  }
+                    [pscustomobject]@{
+                        Date                     = "$Date"
+                        Computername             = "$($env:ComputerName.ToUpper())"
+                        Title                    = "$($AvailableUpdate.Title)"
+                        Description              = "$($AvailableUpdate.Description)"
+                        CveIDs                   = "$(($AvailableUpdate.CveIDs -join ','))"
+                        KB                       = "$(($AvailableUpdate.KBArticleIDs -join ','))"
+                        Severity                 = "$($AvailableUpdate.MsrcSeverity)"
+                        LastDeploymentChangeTime = "$(($AvailableUpdate.LastDeploymentChangeTime ).tostring())"
+                        UninstallationNotes      = "$($AvailableUpdate.UninstallationNotes)"
+                        Categories               = "$(($AvailableUpdate.categories).Name -join ', ')"
+                        Type                     = "$($(switch ($AvailableUpdate.type) { 1 { 'Software' }2 { 'Driver' } }))"
+                        SupportURL               = "$($AvailableUpdate.SupportURL)"
+                        Downloaded               = $($AvailableUpdate.IsDownloaded)
+                        Installed                = $($AvailableUpdate.IsInstalled)
+                        RebootRequired           = $($AvailableUpdate.RebootRequired)
+                    }
 
-                  if ($AvailableUpdate.RebootRequired -eq $True -and $RebootRequired -eq $False) {
-                      $RebootRequired = $True
-                  }
+                    if ($AvailableUpdate.RebootRequired -eq $True -and $RebootRequired -eq $False) {
+                        $RebootRequired = $True
+                    }
 
-              }
+                }
 
-              $Output = @{UpdateCount = $AllUpdates.Count; Updates = $AllUpdates; RebootRequired = $RebootRequired } | ConvertTo-Json  -Depth 2
+                $Output=@{UpdateCount=$AllUpdates.Count;Updates=$AllUpdates;RebootRequired=$RebootRequired}| ConvertTo-Json  -Depth 2
 
-              $Downloader = $UpdateSession.CreateUpdateDownloader()
-              $Downloader.Updates = $DownloadUpDates
-              $Downloading = ($Downloader.Download())
+                $Downloader = $UpdateSession.CreateUpdateDownloader()
+                $Downloader.Updates = $DownloadUpDates
+                $Downloading = ($Downloader.Download())
 
-              $Installer = New-Object -ComObject Microsoft.Update.Installer
-              $Installer.Updates = $DownloadUpDates
-              $Installing = ($Installer.Install())
+                $Installer = New-Object -ComObject Microsoft.Update.Installer
+                $Installer.Updates = $DownloadUpDates
+                $Installing = ($Installer.Install())
 
+            }
+            ELSE {
+
+                $Output = @{UpdateCount = 0; Updates = $null; RebootRequired = $null } | ConvertTo-Json
+
+            }
+
+            Write-Output $Output
+          }catch{
+
+            $Error[0] | Select * |convertt-json -depth 4
           }
-          ELSE {
-
-              $Output = @{UpdateCount = 0; Updates = $null; RebootRequired = $null } | ConvertTo-Json
-
-          }
-
-          Write-Output $Output
         arguments:
           - -ExecutionPolicy
           - Bypass
