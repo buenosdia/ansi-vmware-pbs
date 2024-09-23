@@ -123,7 +123,7 @@
           }
           catch {
               $IsHiddenInstalled = $null
-              $JSON = @{Result = 'No Pending Updates' } | ConvertTo-Json
+              'No Pending Updates'
           }
           if ($null -ne $IsHiddenInstalled) {
 
@@ -156,9 +156,8 @@
               #  $Installer.Updates = $IsHiddenInstalled
 
               #  $pending_updates = $Installer.Install()
-              $JSON = @{Result = @($PendingMissingUpdates | ConvertTo-Json) }
+              @($PendingMissingUpdates | ConvertTo-Json) 
           }
-
           Write-Output $JSON
         arguments:
           - -ExecutionPolicy
@@ -213,7 +212,7 @@
       ignore_errors: true
       ansible.builtin.debug:
         msg:
-          - "{{ pending_updates }}"
+          - "{{ pending_updates.output }}"
       when:
         - pending_updates is defined
 
