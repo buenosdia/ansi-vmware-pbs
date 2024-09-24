@@ -1,0 +1,11 @@
+---
+- name: Try to move OU
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Add current VM to host
+        microsoft.ad.computer:
+        identity: zAnsitTestVM01$
+        path: OU=Systems,OU=East,OU=Servers,OU=Geosol Computers,DC=geosolinc,DC=net
+        state: present
