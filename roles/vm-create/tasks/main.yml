@@ -175,9 +175,9 @@
     cluster: "{{ cluster }}"
     folder: "{{ vm_folder }}"
     vm_username: "Administrator"
-    vm_password: "{{ local_admin | default('SomedingRando01!') }}"
+    vm_password: "{{ local_admin | default( {{ some_rando_pass }}) }}"
     copy:
-      src: "roles/files/setup.ps1"
+      src: "../files/setup.ps1"
       dest: C:\Temp\setup.ps1
       overwrite: true
   when: static_vm is defined

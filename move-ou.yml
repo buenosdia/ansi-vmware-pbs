@@ -1,15 +1,14 @@
 ---
 - name: Try to move OU
-  hosts: localhost
+  hosts: "{{ delegate_to }}"
   gather_facts: false
 
   tasks:
     - name: Add current VM to host
       microsoft.ad.computer:
-        identity: zAnsitTestVM01$
-        path: OU=Systems,OU=East,OU=Servers,OU=Geosol Computers,DC=geosolinc,DC=net
+        identity: "{{ host_name }}"
+        path: "{{ domain_ou }}"
         state: present
         domain_username: "{{ domain_username }}"
         domain_password: "{{ domain_password }}"
         domain_server: "{{ domain_server }}"
-      delegate_to: localhost

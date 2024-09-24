@@ -2,6 +2,8 @@
 - name: Create a VM from a template
   hosts: localhost
   gather_facts: false
+  vars:
+    some_rando_pass: "SomedingRando01!"
 
   roles:
     - vm-create
