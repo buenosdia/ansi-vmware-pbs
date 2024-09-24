@@ -9,3 +9,7 @@
         identity: zAnsitTestVM01$
         path: OU=Systems,OU=East,OU=Servers,OU=Geosol Computers,DC=geosolinc,DC=net
         state: present
+        domain_username: "{{ domain_username }}"
+        domain_password: "{{ domain_password }}"
+        domain_server: "{{ domain_server }}"
+      delegate_to: localhost
